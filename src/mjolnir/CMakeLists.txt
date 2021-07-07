@@ -67,6 +67,7 @@ if(APPLE)
   list(APPEND system_includes ${VALHALLA_SOURCE_DIR}/third_party/date/include/date)
 endif()
 
+# <Cadcorp>
 valhalla_module(NAME mjolnir
   SOURCES ${sources}
   HEADERS ${headers}
@@ -87,6 +88,11 @@ valhalla_module(NAME mjolnir
   DEPENDS
     valhalla::proto
     valhalla::baldr
+    Boost::boost
+    GEOS::GEOS
+    PROJ::PROJ
+    LibICONV::LibICONV
+    LibXML2::LibXML2
     SpatiaLite::SpatiaLite
     SQLite3::SQLite3
     Boost::boost
@@ -94,3 +100,4 @@ valhalla_module(NAME mjolnir
     Threads::Threads
     ZLIB::ZLIB
     robin_hood::robin_hood)
+# </Cadcorp>

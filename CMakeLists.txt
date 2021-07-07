@@ -132,6 +132,12 @@ endif()
 ## Dependencies
 find_package(Threads REQUIRED)
 find_package(ZLIB REQUIRED)
+# <Cadcorp>
+find_package(GEOS REQUIRED)
+find_package(PROJ REQUIRED)
+find_package(LIBICONV REQUIRED)
+find_package(LIBXML2 REQUIRED)
+# </Cadcorp>
 
 # try to find an installed boost or install locally with conan
 set(boost_VERSION "1.71")
@@ -222,6 +228,7 @@ if(ENABLE_DATA_TOOLS)
   find_package(SQLite3 REQUIRED)
   find_package(SpatiaLite REQUIRED)
   find_package(LuaJIT)
+
   add_library(Lua::Lua INTERFACE IMPORTED)
   set_target_properties(Lua::Lua PROPERTIES
     INTERFACE_LINK_LIBRARIES "${LUA_LIBRARIES}"
@@ -286,7 +293,10 @@ if(ENABLE_TOOLS)
     target_link_libraries(${program} valhalla)
     target_include_directories(${program} PUBLIC ${VALHALLA_SOURCE_DIR}/third_party/cxxopts/include)
     if(MSVC)
-      target_link_libraries(${program} ${CURL_LIBRARIES})
+      # <Cadcorp>
+      #target_link_libraries(${program} ${CURL_LIBRARIES})
+      target_link_libraries(${program} ${CURL_LIBRARIES} ws2_32.lib wldap32.lib advapi32.lib crypt32.lib normaliz.lib)
+      # </Cadcorp>
     endif()
     install(TARGETS ${program} DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT runtime)
   endforeach()
@@ -305,13 +315,18 @@ if(ENABLE_DATA_TOOLS)
       target_link_options(${program} PUBLIC -pagezero_size 10000 -image_base 100000000)
     endif()
     if(MSVC)
-      target_link_libraries(${program} ${CURL_LIBRARIES})
+      # <Cadcorp>
+      #target_link_libraries(${program} ${CURL_LIBRARIES})
+      target_link_libraries(${program} ${CURL_LIBRARIES} ws2_32.lib wldap32.lib advapi32.lib crypt32.lib normaliz.lib)
+      # </Cadcorp>
     endif()
     install(TARGETS ${program} DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT runtime)
   endforeach()
 
-  # Target-specific dependencies
-  find_package(GEOS)
+  # Target-specific depedencies
+  # <Cadcorp>
+  #find_package(GEOS)
+  # </Cadcorp>
   target_link_libraries(valhalla_build_admins GEOS::GEOS)
   target_sources(valhalla_build_statistics
     PUBLIC

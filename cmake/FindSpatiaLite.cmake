@@ -72,10 +72,15 @@ IF (SPATIALITE_FOUND)
      SET(CMAKE_REQUIRED_LIBRARIES "-F/Library/Frameworks" ${CMAKE_REQUIRED_LIBRARIES})
    ENDIF(APPLE)
 
-   check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_GE_4_2_0)
-   IF (NOT SPATIALITE_VERSION_GE_4_2_0)
-     MESSAGE(FATAL_ERROR "Found SpatiaLite, but version is too old. Requires at least version 4.2.0")
-   ENDIF (NOT SPATIALITE_VERSION_GE_4_2_0)
+  # <Cadcorp>
+  # This check will fail during linking of the static libspatialite
+  # because it requires dependencies of libspatialite itself as linker input,
+  # but it is unnecessary as we ensure we use the right version.
+  #check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_GE_4_2_0)
+  #IF (NOT SPATIALITE_VERSION_GE_4_2_0)
+  #  MESSAGE(FATAL_ERROR "Found SpatiaLite, but version is too old. Requires at least version 4.2.0")
+  #ENDIF (NOT SPATIALITE_VERSION_GE_4_2_0)
+  # </Cadcorp>
 
   if(NOT TARGET SpatiaLite::SpatiaLite)
     add_library(SpatiaLite::SpatiaLite INTERFACE IMPORTED)

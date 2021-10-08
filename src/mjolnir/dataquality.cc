@@ -103,6 +103,7 @@ void DataQuality::LogIssues() const {
     LOG_WARN("Duplicate ways " + std::to_string(duplicateways_.size()) +
              " duplicate edges = " + std::to_string(duplicates));
 
+#if 0   // <NECSWS>
     // Sort by edgecount and write to separate file
     std::ofstream dupfile;
     std::sort(dups.begin(), dups.end());
@@ -112,6 +113,14 @@ void DataQuality::LogIssues() const {
       dupfile << dupway.wayid1 << "," << dupway.wayid2 << "," << dupway.edgecount << std::endl;
     }
     dupfile.close();
+#else
+    std::sort(dups.begin(), dups.end());
+    LOG_WARN("WayID1   WayID2    DuplicateEdges");
+    for (const auto& dupway : dups) {
+      LOG_WARN(std::to_string(dupway.wayid1) + "," + std::to_string(dupway.wayid2) + "," +
+               std::to_string(dupway.edgecount));
+    }
+#endif  // </NECSWS>
   }
 }
 

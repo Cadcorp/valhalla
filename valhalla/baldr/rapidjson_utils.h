@@ -175,7 +175,7 @@ inline boost::optional<rapidjson::Value&> get_child_optional(V&& v, const char* 
 template <class Ptree> void add_value(const Value& v, Ptree& pt) {
   switch (v.GetType()) {
     case kObjectType:
-      add_object(v.GetObject(), pt);
+      add_object(v.GetObj(), pt);
       break;
     case kArrayType:
       add_array(v.GetArray(), pt);
@@ -224,7 +224,7 @@ void read_json(std::basic_istream<typename Ptree::key_type::value_type>& stream,
     throw std::runtime_error("Could not parse json, error at offset: " +
                              std::to_string(d.GetErrorOffset()));
   if (d.IsObject())
-    add_object(const_cast<const Document*>(&d)->GetObject(), pt);
+    add_object(const_cast<const Document*>(&d)->GetObj(), pt);
   else if (d.IsArray())
     add_array(const_cast<const Document*>(&d)->GetArray(), pt);
   else

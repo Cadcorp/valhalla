@@ -89,6 +89,7 @@ valhalla_module(NAME mjolnir
     valhalla::proto
     valhalla::baldr
     Boost::boost
+    CURL::CURL
     GEOS::GEOS
     PROJ::PROJ
     LibICONV::LibICONV

@@ -50,6 +50,9 @@ public:
   Logger() = delete;
   Logger(const LoggingConfig& config);
   virtual ~Logger();
+  // NECSWS
+  virtual void Close();
+  // Cadcorp
   virtual void Log(const std::string&, const LogLevel);
   virtual void Log(const std::string&, const std::string& custom_directive = " [TRACE] ");
 
@@ -72,6 +75,11 @@ void Configure(const LoggingConfig& config);
 
 // configure logging from the top-level "logging" section of a boost property tree config
 void ConfigureFromPtree(const boost::property_tree::ptree& config);
+
+// NECSWS
+// flushes streams and close files attached to file-based loggers
+void Close(const LoggingConfig& config);
+// NECSWS
 
 // guarding against redefinitions
 #ifndef LOG_ERROR

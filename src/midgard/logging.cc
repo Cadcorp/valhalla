@@ -90,6 +90,9 @@ bool RegisterLogger(const std::string& name, LoggerCreator function_ptr) {
 // logger base class, not pure virtual so you can use as a null logger if you want
 Logger::Logger(const LoggingConfig& /*config*/){};
 Logger::~Logger(){};
+// <NECSWS>
+void Logger::Close(){};
+// </NECSWS>
 void Logger::Log(const std::string&, const LogLevel){};
 void Logger::Log(const std::string&, const std::string&){};
 bool logger_registered = RegisterLogger("", [](const LoggingConfig& config) {
@@ -107,6 +110,13 @@ public:
                    ? colored
                    : uncolored) {
   }
+  // <NECSWS>
+  void Close() override
+  {
+    std::cout.flush();
+    std::cout.clear();
+  };
+  // </NECSWS>
   virtual void Log(const std::string& message, const LogLevel level) {
 #ifdef __ANDROID__
     __android_log_print(android_levels.find(level)->second, "valhalla", "%s", message.c_str());
@@ -144,6 +154,13 @@ bool std_out_logger_registered = RegisterLogger("std_out", [](const LoggingConfi
 
 class StdErrLogger : public StdOutLogger {
   using StdOutLogger::StdOutLogger;
+  // <NECSWS>
+  void Close() override
+  {
+    std::cerr.flush();
+    std::cerr.clear();
+  };
+  // </NECSWS>
   virtual void Log(const std::string& message, const std::string& custom_directive = " [TRACE] ") {
 #ifdef __ANDROID__
     std::string tmp = custom_directive; // to prevent -Wunused-parameter
@@ -220,6 +237,15 @@ public:
     // crack the file open
     ReOpen();
   }
+  // <NECSWS>
+  void Close() override
+  {
+    lock.lock();
+    file.flush();
+    file.close();
+    lock.unlock();
+  };
+  // </NECSWS>
   virtual void Log(const std::string& message, const LogLevel level) {
     Log(message, uncolored.find(level)->second);
   }
@@ -379,6 +405,12 @@ void logging::ConfigureFromPtree(const boost::property_tree::ptree& config) {
   }
   LOG_WARN("No top-level 'logging' section in config, using default logger.");
 }
+
+// <NECSWS>
+void logging::Close(const LoggingConfig& config) {
+  GetLogger(config).Close();
+}
+// </NECSWS>
 
 } // namespace midgard
 } // namespace valhalla

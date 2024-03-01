@@ -113,6 +113,9 @@ bool RegisterLogger(const std::string& name, LoggerCreator function_ptr) {
 // logger base class, not pure virtual so you can use as a null logger if you want
 Logger::Logger(const LoggingConfig& /*config*/){};
 Logger::~Logger(){};
+// <Cadcorp>
+void Logger::Close(){};
+// </Cadcorp>
 void Logger::Log(const std::string&, const LogLevel){};
 void Logger::Log(const std::string&, const std::string&){};
 bool logger_registered = RegisterLogger("", [](const LoggingConfig& config) {
@@ -130,6 +133,13 @@ public:
                    ? colored
                    : uncolored) {
   }
+  // <Cadcorp>
+  void Close() override
+  {
+    std::cout.flush();
+    std::cout.clear();
+  };
+  // </Cadcorp>
   virtual void Log(const std::string& message, const LogLevel level) {
 #ifdef __ANDROID__
     __android_log_print(android_levels.find(level)->second, "valhalla", "%s", message.c_str());
@@ -167,6 +177,13 @@ bool std_out_logger_registered = RegisterLogger("std_out", [](const LoggingConfi
 
 class StdErrLogger : public StdOutLogger {
   using StdOutLogger::StdOutLogger;
+  // <Cadcorp>
+  void Close() override
+  {
+    std::cerr.flush();
+    std::cerr.clear();
+  };
+  // </Cadcorp>
   virtual void Log(const std::string& message, const std::string& custom_directive = " [TRACE] ") {
 #ifdef __ANDROID__
     std::string tmp = custom_directive; // to prevent -Wunused-parameter
@@ -215,6 +232,15 @@ public:
     // crack the file open
     ReOpen();
   }
+  // <Cadcorp>
+  void Close() override
+  {
+    lock.lock();
+    file.flush();
+    file.close();
+    lock.unlock();
+  };
+  // </Cadcorp>
   virtual void Log(const std::string& message, const LogLevel level) {
     Log(message, uncolored.find(level)->second);
   }
@@ -298,6 +324,12 @@ void logging::Log(const std::string& message, const std::string& custom_directiv
 void logging::Configure(const LoggingConfig& config) {
   GetLogger(config);
 }
+
+// <Cadcorp>
+void logging::Close(const LoggingConfig& config) {
+  GetLogger(config).Close();
+}
+// <Cadcorp>
 
 } // namespace midgard
 } // namespace valhalla

@@ -32,6 +32,9 @@ public:
   Logger() = delete;
   Logger(const LoggingConfig& config);
   virtual ~Logger();
+  // <Cadcorp>
+  virtual void Close();
+  // </Cadcorp>
   virtual void Log(const std::string&, const LogLevel);
   virtual void Log(const std::string&, const std::string& custom_directive = " [TRACE] ");
 
@@ -51,6 +54,11 @@ void Log(const std::string&, const std::string& custom_directive = " [TRACE] ");
 // logging::Configure({ {"type", "std_out"}, {"color", ""} })
 // logging::Configure({ {"type", "file"}, {"file_name", "test.log"}, {"reopen_interval", "1"} })
 void Configure(const LoggingConfig& config);
+
+// <Cadcorp>
+// flushes streams and close files attached to file-based loggers
+void Close(const LoggingConfig& config);
+// </Cadcorp>
 
 // guarding against redefinitions
 #ifndef LOG_ERROR

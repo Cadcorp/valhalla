@@ -295,7 +295,7 @@ if(ENABLE_TOOLS)
     if(MSVC)
       # <Cadcorp>
       #target_link_libraries(${program} ${CURL_LIBRARIES})
-      target_link_libraries(${program} ${CURL_LIBRARIES} ws2_32.lib wldap32.lib advapi32.lib crypt32.lib normaliz.lib)
+      target_link_libraries(${program} ${CURL_LIBRARIES} ws2_32.lib wldap32.lib advapi32.lib crypt32.lib normaliz.lib bcrypt.lib iphlpapi.lib)
       # </Cadcorp>
     endif()
     install(TARGETS ${program} DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT runtime)
@@ -317,7 +317,7 @@ if(ENABLE_DATA_TOOLS)
     if(MSVC)
       # <Cadcorp>
       #target_link_libraries(${program} ${CURL_LIBRARIES})
-      target_link_libraries(${program} ${CURL_LIBRARIES} ws2_32.lib wldap32.lib advapi32.lib crypt32.lib normaliz.lib)
+      target_link_libraries(${program} ${CURL_LIBRARIES} ws2_32.lib wldap32.lib advapi32.lib crypt32.lib normaliz.lib bcrypt.lib iphlpapi.lib)
       # </Cadcorp>
     endif()
     install(TARGETS ${program} DESTINATION "${CMAKE_INSTALL_BINDIR}" COMPONENT runtime)

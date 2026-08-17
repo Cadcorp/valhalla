@@ -77,17 +77,37 @@ endif()
 set(mjolnir_depends
   valhalla::proto
   valhalla::baldr
-  PkgConfig::GEOS
-  PkgConfig::SpatiaLite
-  SQLite3::SQLite3
+  # NECSWS PkgConfig::GEOS
+  # NECSWS PkgConfig::SpatiaLite
+  # NECSWS SQLite3::SQLite3
+  # NECSWS
+  GEOS::geos
+  SpatiaLite::SpatiaLite
+  GEOS::geos_c
+  LibXml2::LibXml2
+  Iconv::Iconv
+  PROJ::PROJ
+  CURL::libcurl_static
+  SQLite::SQLite3
+  # NECSWS
   Boost::boost
-  PkgConfig::LuaJIT
+  # NECSWS PkgConfig::LuaJIT
+  # NECSWS
+  LuaJIT::LuaJIT
+  # NECSWS
   Threads::Threads
-  PkgConfig::ZLIB
-  PkgConfig::OPENSSL)
+  # NECSWS PkgConfig::ZLIB
+  # NECSWS PkgConfig::OPENSSL)
+  # NECSWS
+  ZLIB::ZLIB
+  OPENSSL::OPENSSL)
+  # NECSWS
 
 if(EXPAT_FOUND)
-  list(APPEND mjolnir_depends PkgConfig::EXPAT)
+   # NECSWS list(APPEND mjolnir_depends PkgConfig::EXPAT)
+   # NECSWS
+  list(APPEND mjolnir_depends EXPAT::EXPAT)
+  # NECSWS
 endif()
 
 # support lz4 PBF internal compression instead of zlib if available
@@ -113,6 +133,9 @@ valhalla_module(NAME mjolnir
       ${VALHALLA_SOURCE_DIR}/third_party/cpp-statsd-client/include
       ${unordered_dense_include_dir}
       ${libosmium_include_dirs}
+      # NECSWS
+      $(SQLITE3_INCLUDE_DIR)
+      # NECSWS
   DEPENDS
     ${mjolnir_depends})
 

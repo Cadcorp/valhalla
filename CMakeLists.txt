@@ -8,7 +8,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   add_link_options("-Wl,--disable-new-dtags")
 endif()
 
-include(FindPkgConfig)
+# NECSWS include(FindPkgConfig)
 include(GNUInstallDirs)
 
 set(VALHALLA_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
@@ -103,7 +103,10 @@ include(ValhallaSourceGroups)
 # We use pkg-config for (almost) all dependencies:
 # - CMake Find* modules are versioned with CMake, not the packages, see protobuf > 21.12
 # - it's more trivial to use custom installations via PKG_CONFIG_PATH env var
-pkg_check_modules(ZLIB REQUIRED IMPORTED_TARGET zlib)
+# NECSWS pkg_check_modules(ZLIB REQUIRED IMPORTED_TARGET zlib)
+# NECSWS
+find_package(ZLIB REQUIRED)
+# NECSWS
 
 # cURL
 set(curl_target "")
@@ -127,7 +130,7 @@ add_definitions(-DBOOST_NO_CXX11_SCOPED_ENUMS)
 add_definitions(-DBOOST_ALLOW_DEPRECATED_HEADERS)
 add_definitions(-DBOOST_BIND_GLOBAL_PLACEHOLDERS)
 
-find_package(PkgConfig REQUIRED)
+# NECSWS find_package(PkgConfig REQUIRED)
 find_package(Threads REQUIRED)
 
 # resolve vendored libraries
@@ -276,18 +279,43 @@ if(ENABLE_DATA_TOOLS)
   # keep sqlite3 with cmake find_package(), as OSX needs our own FindSqlite3.cmake
   # otherwise the system sqlite3 is found which doesn't allow for spatialite
   find_package(SQLite3 REQUIRED)
-  pkg_check_modules(SpatiaLite REQUIRED IMPORTED_TARGET spatialite)
+  # NECSWS pkg_check_modules(SpatiaLite REQUIRED IMPORTED_TARGET spatialite)
+  # NECSWS
+  find_package(SpatiaLite REQUIRED)
+  # NECSWS
   # make sure we can build tz.sqlite
   find_program(SPATIALITE_TOOL_EXECUTABLE NAMES spatialite_tool)
   find_program(SPATIALITE_EXECUTABLE NAMES spatialite)
   if(NOT SPATIALITE_TOOL_EXECUTABLE OR NOT SPATIALITE_EXECUTABLE)
-    message(FATAL_ERROR "spatialite-tools not found: need both 'spatialite_tool' and 'spatialite', install the correct package for your system.")
+    # NECSWS message(FATAL_ERROR "spatialite-tools not found: need both 'spatialite_tool' and 'spatialite', install the correct package for your system.")
   endif()
-  pkg_check_modules(LuaJIT REQUIRED IMPORTED_TARGET luajit)
-  pkg_check_modules(GEOS REQUIRED IMPORTED_TARGET geos)
-  pkg_check_modules(OPENSSL REQUIRED IMPORTED_TARGET openssl)
-  pkg_check_modules(EXPAT IMPORTED_TARGET expat)
+  # NECSWS pkg_check_modules(LuaJIT REQUIRED IMPORTED_TARGET luajit)
+  # NECSWS pkg_check_modules(GEOS REQUIRED IMPORTED_TARGET geos)
+  # NECSWS pkg_check_modules(OPENSSL REQUIRED IMPORTED_TARGET openssl)
+  # NECSWS pkg_check_modules(EXPAT IMPORTED_TARGET expat)
+  # NECSWS
+  find_package(LuaJIT REQUIRED)
+  find_package(GEOS REQUIRED)
+  find_package(OPENSSL REQUIRED)
+  find_package(EXPAT REQUIRED)
+  find_package(LIBXML2 REQUIRED)
+  find_package(Iconv REQUIRED)
+  find_package(PROJ REQUIRED)
+  find_package(CURL REQUIRED)
+  # NECSWS
 endif()
+
+# NECSWS
+if (OPENSSL_FOUND)
+  if(NOT TARGET OPENSSL::OPENSSL)
+    add_library(OPENSSL::OPENSSL INTERFACE IMPORTED)
+
+    set_target_properties(OPENSSL::OPENSSL PROPERTIES
+      INTERFACE_LINK_LIBRARIES "${OPENSSL_LIBRARIES}"
+      INTERFACE_INCLUDE_DIRECTORIES "${OPENSSL_INCLUDE_DIR}")
+  endif()
+endif()
+# NECSWS
 
 if (ENABLE_THREAD_SAFE_TILE_REF_COUNT)
  add_definitions(-DENABLE_THREAD_SAFE_TILE_REF_COUNT)

@@ -137,4 +137,7 @@ valhalla_module(NAME baldr
     ${valhalla_protobuf_targets}
     Boost::boost
     ${curl_target}
-    PkgConfig::ZLIB)
+    # NECSWS PkgConfig::ZLIB
+    # NECSWS
+    ZLIB::ZLIB)
+    # NECSWS
